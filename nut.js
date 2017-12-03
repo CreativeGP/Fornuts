@@ -63,10 +63,11 @@ NUT = function (readonly) {
 		break;
 	    case 'K':
 		// move up
-		self.cursor.chmove(0, 1);
+		self.cursor.chmove(0, -1);
 		break;
 	    case 'J':
 		// move down
+		self.cursor.chmove(0, 1);
 		break;
 	    }
 	    e.preventDefault();
