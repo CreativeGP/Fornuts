@@ -1,0 +1,17 @@
+<'../xaller/test/web.xal'>
+
++(view)Textbox
+(css view.__element 'width' '100%')
+(css view.__element 'height' '100%')
+
+(view.keydown (defun (e) (
+    e = (or e window.event)
+    (e.ctrlKey) ? {
+        c = (or e.which e.keyCode)
+        (e.preventDefault)
+        (e.stopPropagation)
+    }
+    )))
+
+
+end
