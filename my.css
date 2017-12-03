@@ -18,6 +18,7 @@ body {
 }
 
 .nut {
+    line-height: 1em;
     background-color: #EEE;
     color: black;
     outline: 0px !important;

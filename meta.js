@@ -1,13 +1,13 @@
 function getRandomString(myStrong){
-    var strong = 1000;
+ strong = 1000;
     if (myStrong) strong = myStrong;
     return new Date().getTime().toString(16)  + Math.floor(strong*Math.random()).toString(16)
 }
 
 function getRandomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
+    let letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
 	color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
@@ -45,7 +45,7 @@ $.fn.selectRange = function(start, end) {
         } else if(this.setSelectionRange) {
             this.setSelectionRange(start, end);
         } else if(this.createTextRange) {
-            var range = this.createTextRange();
+            let range = this.createTextRange();
             range.collapse(true);
             range.moveEnd('character', end);
             range.moveStart('character', start);
@@ -98,4 +98,108 @@ function checkCharType(input, charType) {
             return (input.match(/^[a-z]+$/)) ? true : false;
     }
     return false;
+}
+
+/** スクロールバー位置更新
+ chromeやIEではjsで値を変更してキャレットが画面の外に出ても
+ スクロールバーが追従しないのを何とかする関数
+*/
+var updateScrollPos = function(editor) {
+    // 初期状態を保存
+    let text = $(editor).val();
+    let selectionStart = editor.selectionStart;
+    let selectionEnd   = editor.selectionEnd;
+
+    // insertTextコマンドで適当な文字(X)の追加を試みる
+    let isInsertEnabled;
+    try {
+        isInsertEnabled = document.execCommand("insertText", false, "X");
+    } catch(e) {
+        // IE10では何故かfalseを返さずに例外が発生するのでcatchで対応する
+        isInsertEnabled = false;
+    }
+
+    if (isInsertEnabled) {
+        // insertTextに成功したらChrome
+        // chromeはどう頑張ってもまっとうな手段が通用しない。
+        // 苦肉の策としてselectionStart,endを揃えてから
+        // 一旦フォーカスを外してすぐに戻す。そうするとスクロールバーが追従する
+        // これにより、chromeではblurやfocusイベントはまともに使えなくなる黒魔術
+        $(editor).val(text);
+        editor.selectionStart = selectionStart;
+        editor.selectionEnd = selectionStart;
+        $(editor).trigger("blur", ["kantanEditorDummy"]);
+        $(editor).trigger("focus", ["kantanEditorDummy"]);
+
+        // valは戻してあるのでキャレット位置のみ元に戻す
+        editor.selectionStart = selectionStart;
+        editor.selectionEnd = selectionEnd;
+    } else {
+        // IE,FirefoxはinsertTextに失敗するのでval関数で適当な文字(X)を挿入する。
+        // IEではその後にその文字を選択してdeleteコマンドで削除するとスクロールバーが追従する
+        let part1 = text.substring(0, selectionStart);
+        let part2 = text.substr(selectionEnd);
+        $(editor).val(part1 + "X" + part2);
+        editor.selectionStart = part1.length;
+        editor.selectionEnd = part1.length + 1;
+        let isDeleteEnabled = document.execCommand("delete", false, null);
+
+        // 追従した後はvalとキャレットを元に戻す
+        $(editor).val(text);
+        editor.selectionStart = selectionStart;
+        editor.selectionEnd = selectionEnd;
+    }
+}
+
+
+var getTextHeight = function(font) {
+    var text = $('<span>Hg</span>').css({ fontFamily: font });
+    var block = $('<div style="display: inline-block; width: 1px; height: 0px;"></div>');
+
+    var div = $('<div></div>');
+    div.append(text, block);
+
+    var body = $('body');
+    body.append(div);
+
+    try {
+
+	var result = {};
+
+	block.css({ verticalAlign: 'baseline' });
+	result.ascent = block.offset().top - text.offset().top;
+
+	block.css({ verticalAlign: 'bottom' });
+	result.height = block.offset().top - text.offset().top;
+
+	result.descent = result.height - result.ascent;
+
+    } finally {
+	div.remove();
+    }
+
+    return result;
+};
+
+function getSelectionDimensions() {
+    var sel = document.selection, range;
+    var width = 0, height = 0;
+    if (sel) {
+        if (sel.type != "Control") {
+            range = sel.createRange();
+            width = range.boundingWidth;
+            height = range.boundingHeight;
+        }
+    } else if (window.getSelection) {
+        sel = window.getSelection();
+        if (sel.rangeCount) {
+            range = sel.getRangeAt(0).cloneRange();
+            if (range.getBoundingClientRect) {
+                var rect = range.getBoundingClientRect();
+                width = rect.right - rect.left;
+                height = rect.bottom - rect.top;
+            }
+        }
+    }
+    return { width: width , height: height };
 }

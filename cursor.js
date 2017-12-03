@@ -40,8 +40,26 @@ CURSOR.prototype.get_choordinate = function () {
     }
 };
 CURSOR.prototype.moveto = function (pos) {
-    if ($("#nut-"+this.nut_id)[0].selectionStart > 0)
-	$("#nut-"+this.nut_id).selectRange(pos);
+    let jq = $("#nut-"+this.nut_id);
+    if (pos >= 0)
+    {
+	jq.selectRange(pos);
+	let cho = this.get_choordinate();
+	let char_height = 14; /*getTextHeight("'Ubuntu Mono', monospace").height;*/
+	let char_per_page = jq.height() / char_height;
+	let page_top_y = jq.scrollTop();
+	let page_bottom_y = jq.scrollTop() + jq.height();
+	let cursor_y = cho.y * char_height;
+	console.log([cursor_y, page_top_y, page_bottom_y]);
+	if (page_bottom_y < cursor_y)
+	{
+	    jq[0].scrollTop += char_height;
+	}
+	else if (cursor_y < page_top_y)
+	{
+	    jq[0].scrollTop -= char_height;
+	}
+    }
 };
 CURSOR.prototype.move = function (offset) {
     this.moveto(this.get_position() + offset);
