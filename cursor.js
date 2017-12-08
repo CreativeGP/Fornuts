@@ -88,8 +88,21 @@ CURSOR.prototype.chmoveto = function (tox, toy) {
 	if (checkCharType(content.charAt(i), "zenkaku"))
 	    x ++;
     }
-}
+};
 CURSOR.prototype.chmove = function (x, y) {
     let cho = this.get_choordinate();
     this.chmoveto(cho.x + x, cho.y + y);
+};
+CURSOR.prototype.word_move = function (offset) {
+    let nut = NUT.getNut(this.nut_id);
+    let nowpos = this.get_position();
+    for (let i = nut.words.length-2; i >= 0; i --) {
+	console.log(nut.words[i], nut.words[i+1]);
+	if (nut.words[i] <= nowpos && nowpos < nut.words[i+1]) {
+	    if (nut.words[i] != nowpos)
+		this.moveto(nut.words[i]);
+	    else
+		this.moveto(nut.words[i+offset]);
+	}
+    }
 };

@@ -31,10 +31,13 @@ NUT = function (readonly) {
     this.nut_id = NUT.num;
     this.cursor = new CURSOR(this.nut_id, 0);
 
+    this.words = [];
+
     NUT.activate(this.nut_id);
 
     let self = this;
     $("#nut-"+this.nut_id).keydown((e) => {
+	self.updateWords();
 	e = e || window.event; // Get event
 	if (e.ctrlKey) {
 	    let c = e.which || e.keyCode; // Get key code
@@ -45,6 +48,14 @@ NUT = function (readonly) {
 	    case 39:
 	    case 40:
 		return;
+	    case 188:
+		// move left
+		self.cursor.word_move(-1);
+		break;
+	    case 190:
+		// move right
+		self.cursor.word_move(1);
+		break;
 	    }
 	    switch (String.fromCharCode(c)) {
 	    case 'A':
@@ -89,6 +100,22 @@ NUT = function (readonly) {
     });
 
     NUT.num ++;
+};
+
+NUT.prototype.updateWords = function () {
+      $.get('http://cgp.php.xdomain.jp/lab/morph/index.php',
+	    { s: $("#nut-"+this.nut_id).val() },
+	    (data) => {
+		let pos = 0;
+		let content = $("#nut-"+this.nut_id).val();
+		this.words = [];
+		data.result.some((v, i) => {
+		    pos = content.indexOf(v, pos);
+		    this.words.push(pos);
+		    pos += v.length;
+		});
+		this.words.push(content.length+1);
+	    });
 };
 
 NUT.getNut = (id) => {
