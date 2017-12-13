@@ -17,6 +17,8 @@ Copyright (C) CGP 2017.
 
 const CURSOR = function (nut_id) {
     this.nut_id = nut_id;
+    this.distance_back_word = 0;
+    this.distance_forward_word = 0;
 };
 CURSOR.prototype.get_position = function () {
     return $("#nut-"+this.nut_id)[0].selectionStart;
@@ -95,14 +97,14 @@ CURSOR.prototype.chmove = function (x, y) {
 };
 CURSOR.prototype.word_move = function (offset) {
     let nut = NUT.getNut(this.nut_id);
-    let nowpos = this.get_position();
-    for (let i = nut.words.length-2; i >= 0; i --) {
-	console.log(nut.words[i], nut.words[i+1]);
-	if (nut.words[i] <= nowpos && nowpos < nut.words[i+1]) {
-	    if (nut.words[i] != nowpos)
-		this.moveto(nut.words[i]);
-	    else
-		this.moveto(nut.words[i+offset]);
-	}
+    let wwmm = config.get('word-wise-movement-method');
+    if (wwmm == 'segment') {
+	nut.checkWordBySegmentation();
+	this.move(offset < 0 ?
+		  -this.distance_back_word : this.distance_forward_word);
+    } else if (wwmm == 'space') {
+	nut.checkWordBySpace();
+	this.move(offset < 0 ?
+		  -this.distance_back_word : this.distance_forward_word);
     }
 };

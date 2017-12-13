@@ -1,11 +1,12 @@
+const config = new CONFIG('');
+
 $(() => {
     const nut0 = new NUT(false);
     const nut1 = new NUT(false);
     const save = DIALOG.loadDirectly($("#save"));
-    $('.nut').on('keydown, input', () => {
+    $(document).on('keydown, input, keypress', () => {
 	// key pressed
 	console.log(NUT.getActiveNut().cursor.get_choordinate());
-	
     });
     $("#commandlet").on('keydown', (e) => {
 	if (e.keyCode == 13) {

@@ -31,13 +31,18 @@ NUT = function (readonly) {
     this.nut_id = NUT.num;
     this.cursor = new CURSOR(this.nut_id, 0);
 
-    this.words = [];
-
     NUT.activate(this.nut_id);
 
     let self = this;
     $("#nut-"+this.nut_id).keydown((e) => {
-	self.updateWords();
+	// if (NUT.getActiveNut().nut_id == self.nut_id)
+	//     this.updateAroundCursor();
+
+	// let wwmm = config.get('word-wise-movement-method');
+	// if (wwmm == 'segment')
+	//     self.checkWordBySegmentation();
+	// else if (wwmm == 'space')
+	//     self.checkWordBySpace();
 	e = e || window.event; // Get event
 	if (e.ctrlKey) {
 	    let c = e.which || e.keyCode; // Get key code
@@ -102,21 +107,58 @@ NUT = function (readonly) {
     NUT.num ++;
 };
 
-NUT.prototype.updateWords = function () {
-      $.get('http://cgp.php.xdomain.jp/lab/morph/index.php',
-	    { s: $("#nut-"+this.nut_id).val() },
-	    (data) => {
-		let pos = 0;
-		let content = $("#nut-"+this.nut_id).val();
-		this.words = [];
-		data.result.some((v, i) => {
-		    pos = content.indexOf(v, pos);
-		    this.words.push(pos);
-		    pos += v.length;
-		});
-		this.words.push(content.length+1);
-	    });
+NUT.prototype.checkWordBySpace = function (n=0, m=0) {
+    let cursorpos = this.cursor.get_position();
+    let editor_content = $("#nut-"+this.nut_id).val();
+    let special_char_regex = /[ #!,;:@$%^&='"<>\?\/\\\.\*\+\(\)\{\}\[\]]/;
+    if (m == 0) {
+	this.cursor.distance_back_word =
+	    cursorpos - editor_content.substr(0, cursorpos-1-n).regexLastIndexOf(special_char_regex)-1;
+	if (editor_content[cursorpos-this.cursor.distance_back_word].match(special_char_regex))
+	    this.checkWordBySpace(this.cursor.distance_back_word, 0);
+    }
+    this.cursor.distance_forward_word =
+	editor_content.substr(cursorpos+1+m).regexIndexOf(special_char_regex)+1+m;
+    if (editor_content[cursorpos+this.cursor.distance_forward_word-1].match(special_char_regex)) {
+	this.checkWordBySpace(0, this.cursor.distance_forward_word);
+    }
 };
+
+NUT.prototype.checkWordBySegmentation = function (n=1) {
+    let self = this;
+    let callback = (data) => {
+	if (data.length == 1) {
+	    self.checkWordBySegmentation(n+1);
+	    return;
+	}
+	let last = data[data.length-1];
+	if (last) {
+	    console.log(last.length);
+	    this.cursor.distance_back_word = last.length;
+	    return last.length;
+	}
+    };
+    let cursorpos = this.cursor.get_position();
+    let data = Segmenter.segment($("#nut-"+this.nut_id).val().substr(cursorpos-n, n));
+    let result = callback(data);
+    // if (result) console.log(result);
+
+    callback = (data) => {
+	if (data.length == 1) {
+	    self.checkWordBySegmentation(n+1);
+	    return;
+	}
+	let beg = data[0];
+	if (beg) {
+	    console.log(beg.length);
+	    this.cursor.distance_forward_word = beg.length;
+	    return beg.length;
+	}
+    };
+    data = Segmenter.segment($("#nut-"+this.nut_id).val().substr(cursorpos, n));
+    result = callback(data);
+    // if (result) console.log(result);
+}
 
 NUT.getNut = (id) => {
     let res = null;
