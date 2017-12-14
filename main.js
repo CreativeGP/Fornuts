@@ -24,7 +24,8 @@ $(() => {
 		NUT.activate(Number(commands[1]));
 		break;
 	    case "set":
-
+		config.data[commands[1]] = commands[2];
+		break;
 	    default:
 		return;
 	    }
