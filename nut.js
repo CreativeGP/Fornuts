@@ -101,19 +101,26 @@ NUT = function (readonly) {
 
 NUT.prototype.checkWordBySpace = function (n=0, m=0) {
     let cursorpos = this.cursor.get_position();
-    let editor_content = $("#nut-"+this.nut_id).val();
+    let editor_content = $("#nut-"+this.nut_id).val() + " ";
     let special_char_regex = /[ #!,;:@$%^&='"<>\?\/\\\.\*\+\(\)\{\}\[\]]/;
     if (m == 0) {
 	this.cursor.distance_back_word =
 	    cursorpos - editor_content.substr(0, cursorpos-1-n).regexLastIndexOf(special_char_regex)-1;
-	if (editor_content[cursorpos-this.cursor.distance_back_word].match(special_char_regex))
+	if (editor_content[cursorpos-this.cursor.distance_back_word].match(special_char_regex)) {
+	    if (this.cursor.distance_back_word == 0) return;
 	    this.checkWordBySpace(this.cursor.distance_back_word, 0);
+	}
     }
     this.cursor.distance_forward_word =
 	editor_content.substr(cursorpos+1+m).regexIndexOf(special_char_regex)+1+m;
     if (editor_content[cursorpos+this.cursor.distance_forward_word-1].match(special_char_regex)) {
+	if (this.cursor.distance_forward_word == 0) return;
+	if (cursorpos+this.cursor.distance_forward_word == editor_content.length-1) return;
 	this.checkWordBySpace(0, this.cursor.distance_forward_word);
     }
+    // if (cursorpos+this.cursor.distance_forward_word == editor_content.length) {
+	
+    // }
 };
 
 NUT.prototype.checkWordBySegmentation = function (n=1) {
