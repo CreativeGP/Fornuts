@@ -21,7 +21,7 @@ DIALOG = function (title, content, id) {
     this.content = content;
     if (id) this.id = id;
     else this.id = getRandomString(10);
-    $('#main').after(`
+    $('#dialog-layer').before(`
 <form id="fornuts-dialog-${this.id}" class="fornuts-dialog" style="background-color: #dbeaf9">
 <div style="background-color: gray">
 <p class="text-center">${title}</p>
@@ -33,6 +33,7 @@ ${content}
     $('#fornuts-dialog-'+this.id).resizable();
     $('#fornuts-dialog-'+this.id).css('mrgin', '0');
     $('#fornuts-dialog-'+this.id).css('display', 'none');
+    $('#fornuts-dialog-'+this.id).css('z-index', '10');
     DIALOG.dialogs.push(this);
 }
 
