@@ -4,6 +4,7 @@ $(() => {
     const nut0 = new NUT(false);
     const nut1 = new NUT(false);
     const save = DIALOG.loadDirectly($("#save"));
+    const open = DIALOG.loadDirectly($("#open"));
     $(document).on('keydown, input, keypress', () => {
 	// key pressed
 	console.log(NUT.getActiveNut().cursor.get_choordinate());
@@ -22,6 +23,8 @@ $(() => {
 	    case "move":
 		NUT.activate(Number(commands[1]));
 		break;
+	    case "set":
+
 	    default:
 		return;
 	    }

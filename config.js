@@ -15,12 +15,15 @@ Copyright (C) CGP 2017.
 */
 
 CONFIG = function (filename) {
-    this.word_wise_movement_method = 'space';
+    this.data = {
+	word_wise_movement_method: 'space'
+    };
 };
 
 CONFIG.prototype.get = function (attr) {
-    switch (attr) {
-    case 'word-wise-movement-method':
-	return this.word_wise_movement_method;
-    }
+    return this.data[attr];
+};
+
+CONFIG.prototype.set = function (attr, value) {
+    
 };

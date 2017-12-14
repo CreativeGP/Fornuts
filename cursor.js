@@ -97,7 +97,7 @@ CURSOR.prototype.chmove = function (x, y) {
 };
 CURSOR.prototype.word_move = function (offset) {
     let nut = NUT.getNut(this.nut_id);
-    let wwmm = config.get('word-wise-movement-method');
+    let wwmm = config.get('word_wise_movement_method');
     if (wwmm == 'segment') {
 	nut.checkWordBySegmentation();
 	this.move(offset < 0 ?

@@ -35,14 +35,6 @@ NUT = function (readonly) {
 
     let self = this;
     $("#nut-"+this.nut_id).keydown((e) => {
-	// if (NUT.getActiveNut().nut_id == self.nut_id)
-	//     this.updateAroundCursor();
-
-	// let wwmm = config.get('word-wise-movement-method');
-	// if (wwmm == 'segment')
-	//     self.checkWordBySegmentation();
-	// else if (wwmm == 'space')
-	//     self.checkWordBySpace();
 	e = e || window.event; // Get event
 	if (e.ctrlKey) {
 	    let c = e.which || e.keyCode; // Get key code
