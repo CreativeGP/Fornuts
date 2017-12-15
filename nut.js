@@ -63,6 +63,9 @@ NUT = function (readonly) {
 	    case 'S':
 		DIALOG.getDialog('save').show();
 		break;
+	    case 'O':
+		DIALOG.getDialog('open').show();
+		break;
 	    case 'H':
 		self.cursor.move(-1);
 		break;
@@ -118,9 +121,6 @@ NUT.prototype.checkWordBySpace = function (n=0, m=0) {
 	if (cursorpos+this.cursor.distance_forward_word == editor_content.length-1) return;
 	this.checkWordBySpace(0, this.cursor.distance_forward_word);
     }
-    // if (cursorpos+this.cursor.distance_forward_word == editor_content.length) {
-	
-    // }
 };
 
 NUT.prototype.checkWordBySegmentation = function (n=1) {

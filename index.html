@@ -22,13 +22,33 @@
 
 	<div id="dialog-layer"></div>
 
-	<dialog id="save">
+	<div id="save" hidden>
 	    <title>== <b>SAVE</b> this file ==</title>
-	    <button type="button">SAVE</button>
-	    <button type="button">Cancel</button>
-	</dialog>
+	    <div>
+		<span style="width: 10%">filename: </span>
+		<input type="text" style="width: 90%">
+	    </div>
+	    <div>
+		<button type="button">SAVE</button>
+		<button type="button">Cancel</button>
+	    </div>
+	</div>
+	<div id="open" hidden>
+	    <title>== <b>OPEN</b> a file on new nut ==</title>
+	    <div>
+		From URL <input type="text" id="dOpen_iURL"><br>
+	    </div>
+	    <div>
+		From local <button type="button">browse ...</button><br>
+	    </div>
+	    <div>
+		<button type="button" id="dOpen_bOpen">OPEN</button>
+		<button type="button" id="dOpen_bCancel">Cancel</button>
+	    </div>
+	</div>
 
 	<script src="tiny_segmenter.js"></script>
+	<script src="download2.js"></script>
 	<script>const Segmenter = new TinySegmenter();</script>
 	<script src="config.js"></script>
 	<script src="meta.js"></script>

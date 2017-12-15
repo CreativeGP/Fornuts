@@ -57,3 +57,9 @@ DIALOG.prototype.show = function () {
 DIALOG.prototype.hide = function () {
     $('#fornuts-dialog-'+this.id).css('display', 'none');
 }
+DIALOG.prototype.bind = function (selector, event, func) {
+    $('#fornuts-dialog-'+this.id+" "+selector).on(event, func);
+};
+DIALOG.prototype.getJquery = function () {
+    return $('#fornuts-dialog-'+this.id);
+};
