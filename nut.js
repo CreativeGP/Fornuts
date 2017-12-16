@@ -19,9 +19,12 @@ let NUT;
 NUT = function (readonly) {
     let rio = (readonly) ? "readonly" : "";
     $("#menu").after(`
+<div id="nut-wrapper-${NUT.num}">
+        <div class="nut-title" id="nut-title-${NUT.num}">index.html</div>
 	<textarea class="fullscreen nut" id="nut-${NUT.num}" wrap="off" ${rio}>This is test.
 
 	Multilines.</textarea>
+</div>
 `);
     NUT.nuts.push(this);
     

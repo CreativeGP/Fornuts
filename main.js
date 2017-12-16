@@ -17,7 +17,7 @@ $(() => {
 
     const open = DIALOG.loadDirectly($("#open"));
     open.bind("#dOpen_bOpen", "click", () => {
-	if (open.getJquery().find("#dOpen_iLocalPath")[0].files) {
+	if (open.getJquery().find("#dOpen_iLocalPath")[0].files.length > 0) {
 	    let files = open.getJquery().find("#dOpen_iLocalPath")[0].files;
 	    for (let i = 0, f; f = files[i]; i++) {
 		let reader = new FileReader();
@@ -29,6 +29,10 @@ $(() => {
 		})(f);
 		reader.readAsText(f);
 	    }
+	    open.getJquery().find("#dOpen_iLocalPathWrapper").html(`
+		    Browse...
+		    <input type="file" name="local_path" id="dOpen_iLocalPath" style="width: 100%; display: none;"><br>
+`);
 	    open.hide();
 	} else {
     	    $.get(open.getJquery().find("#dOpen_iURL").val(), (data) => {
