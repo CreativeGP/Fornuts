@@ -25,23 +25,31 @@
 	<div id="save" hidden>
 	    <title>== <b>SAVE</b> this file ==</title>
 	    <div>
-		<span style="width: 10%">filename: </span>
-		<input type="text" style="width: 90%">
+		<span style="width: 10%">Filename: </span>
+		<input type="text" name="dSave_iFilename" style="width: 100%">
 	    </div>
-	    <div>
-		<button type="button">SAVE</button>
-		<button type="button">Cancel</button>
+	    <div style="margin-top: 20px">
+		<button type="button" id="dOpen_bSave">SAVE</button>
+		<button type="button" id="dOpen_bCancel">Cancel</button>
 	    </div>
 	</div>
+
 	<div id="open" hidden>
 	    <title>== <b>OPEN</b> a file on new nut ==</title>
 	    <div>
-		From URL <input type="text" id="dOpen_iURL"><br>
+		<span>Source URL:</span>
+		<input type="text" name="src_url" id="dOpen_iURL" style="width: 100%"><br>
 	    </div>
 	    <div>
-		From local <button type="button">browse ...</button><br>
+		<span>From local:</span>
+		<label id="dOpen_iLocalPathWrapper" for="dOpen_iLocalPath" class="buttonlabel">
+		    Browse...
+		    <input type="file" name="local_path" id="dOpen_iLocalPath" style="width: 100%; display: none;"><br>
+		    <!-- <input type="text" name="local_path" id="dOpen_iLocalPath" style="width: 100%"><br>
+			 <button type="button" id="dOpen_bBrowse">browse ...</button> -->
+		</label>
 	    </div>
-	    <div>
+	    <div style="margin-top: 20px">
 		<button type="button" id="dOpen_bOpen">OPEN</button>
 		<button type="button" id="dOpen_bCancel">Cancel</button>
 	    </div>

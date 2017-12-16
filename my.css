@@ -30,6 +30,12 @@ button {
     border: solid 1px black;
 }
 
+.buttonlabel {
+    font-weight: normal;
+    background-color: #ccaacc;
+    border: solid 1px black;
+}
+
 .fornuts-dialog {
     margin: 0;
 

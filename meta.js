@@ -225,3 +225,30 @@ String.prototype.regexLastIndexOf = function(regex, startpos) {
     }
     return lastIndexOf;
 }
+
+function handleFileSelect(evt) {
+    var files = evt.target.files; // inputタグからFileオブジェクトを取得
+
+    // ファイル数分実行
+    for (var i = 0, f; f = files[i]; i++) {
+        if (!f.type.match('image.*')) {
+            continue;
+        }
+
+        var reader = new FileReader(); // ファイル読み取り用オブジェクト作成
+
+        // ファイルを読み時
+        reader.onload = (function(theFile) {
+            return function(e) {
+                // サムネイル用のimgタグ
+                var $html = ['<img class="photo" src="', e.target.result,'" title="', escape(theFile.name), '">'].join('');
+
+                // サムネイルタグを生成
+                $('output').append($html);
+            };
+        })(f);
+
+        // データURLにエンコードした内容を格納
+        reader.readAsDataURL(f);
+    }
+}

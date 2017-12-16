@@ -3,12 +3,29 @@ const config = new CONFIG('');
 $(() => {
     const nut0 = new NUT(false);
     const nut1 = new NUT(false);
+    $("#nut-"+nut1.nut_id).focus();
     const save = DIALOG.loadDirectly($("#save"));
     const open = DIALOG.loadDirectly($("#open"));
     open.bind("#dOpen_bOpen", "click", () => {
-    	$.get(open.getJquery().find("#dOpen_iURL").val(), (data) => {
-	    $("#nut-"+NUT.getActiveNut().nut_id).html(data);
-	});
+	if (open.getJquery().find("#dOpen_iLocalPath")[0].files) {
+	    let files = open.getJquery().find("#dOpen_iLocalPath")[0].files;
+	    for (let i = 0, f; f = files[i]; i++) {
+		let reader = new FileReader();
+		reader.onload = (function (theFile) {
+		    return function (e) {
+			console.log(e.target.result);
+			$("#nut-"+NUT.getActiveNut().nut_id).html(e.target.result);
+		    };
+		})(f);
+		reader.readAsText(f);
+	    }
+	    open.hide();
+	} else {
+    	    $.get(open.getJquery().find("#dOpen_iURL").val(), (data) => {
+		$("#nut-"+NUT.getActiveNut().nut_id).html(data);
+		open.hide();
+	    });
+	}
     });
     open.bind("#dOpen_bCancel", "click", () => {
 	open.hide();
