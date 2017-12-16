@@ -34,6 +34,12 @@ ${content}
     $('#fornuts-dialog-'+this.id).css('mrgin', '0');
     $('#fornuts-dialog-'+this.id).css('display', 'none');
     $('#fornuts-dialog-'+this.id).css('z-index', '10');
+
+    let self = this;
+    $(document).keydown((e) => {
+	if (e.keyCode == 27) // Esc
+	    self.hide();
+    });
     DIALOG.dialogs.push(this);
 }
 

@@ -4,7 +4,17 @@ $(() => {
     const nut0 = new NUT(false);
     const nut1 = new NUT(false);
     $("#nut-"+nut1.nut_id).focus();
+
     const save = DIALOG.loadDirectly($("#save"));
+    save.bind('#dSave_bSave', 'click', () => {
+	download(save.getJquery().text(),
+		 save.getJquery().find("#dSave_iFilename").val(),
+		 "text/plain");
+    });
+    save.bind("#dSave_bCancel", "click", () => {
+	save.hide();
+    });
+
     const open = DIALOG.loadDirectly($("#open"));
     open.bind("#dOpen_bOpen", "click", () => {
 	if (open.getJquery().find("#dOpen_iLocalPath")[0].files) {
@@ -27,9 +37,11 @@ $(() => {
 	    });
 	}
     });
+    
     open.bind("#dOpen_bCancel", "click", () => {
 	open.hide();
     });
+
     $(document).on('keydown, input, keypress', () => {
 	// key pressed
 	console.log(NUT.getActiveNut().cursor.get_choordinate());
